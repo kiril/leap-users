@@ -37,6 +37,7 @@ drop.get("hello") { request in
 
 drop.get("authenticate", "basic") { request in
     log.error("WTF man")
+    debugPrint("omfg please work")
     guard let credentials = request.auth.header?.basic else {
         log.error("No HTTP Auth Headers")
         throw Abort.badRequest
