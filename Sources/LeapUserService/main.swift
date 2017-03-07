@@ -1,15 +1,14 @@
-import Vapor
-import HTTP
-import MongoKitten
 import Foundation
+import Darwin
 
-let env = ProcessInfo.processInfo.environment
-let mongoURL = env["MONGOHQ_URL"] ?? env["MONGO_URL"] ?? "mongodb://localhost:27017"
-print(mongoURL)
-let mongo = try Server(mongoURL: mongoURL)
-let db = mongo["users"]
+import Vapor
+import VaporMongo
+import HTTP
+import Auth
 
 let drop = Droplet()
+try drop.addProvider(VaporMongo.Provider.self)
+drop.middleware.append(AuthMiddleware(user: LeapUserService.User.self))
 
 drop.get("/") { request in
     return Response(redirect: "http://www.singleleap.com")
@@ -30,9 +29,9 @@ drop.get("authenticate", "basic") { request in
     }
 
     print("got a good auth request! I should do something with that...")
-    guard let user = db["user"].findOne(["email": credentials.id]) else {
+    guard let user = try User.query().filter("email", credentials.id).first() else {
         print("No such user")
-        throw Abort.unauthorized
+        throw Abort.custom(status: Status.unauthorized, message: "No such user.")
     }
     return "Hi there friend!"
 }
