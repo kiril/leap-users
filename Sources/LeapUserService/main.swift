@@ -21,6 +21,7 @@ try drop.addProvider(VaporMongo.Provider.self)
 // Auth
 drop.middleware.append(AuthMiddleware(user: LeapUserService.User.self))
 
+
 // Views... these should go elsewhere...
 
 drop.get("/") { request in
@@ -32,20 +33,20 @@ drop.get("hello") { request in
 }
 
 drop.get("authenticate", "basic") { request in
-    print("authenticate/basic called...")
+    drop.log.info("authenticate/basic called...")
 
     guard let credentials = request.auth.header?.basic else {
-        print("No HTTP Auth Headers")
+        drop.log.warning("No HTTP Auth Headers")
         throw Abort.badRequest
     }
 
-    print("Retrieving the user:")
-    guard let user = try User.query().filter("email", credentials.id).first() else {
-        print("No such user. \(credentials.id)")
-        throw Abort.custom(status: Status.unauthorized, message: "No such user.")
+    drop.log.debug("Logging in")
+    do {
+        try request.auth.login(credentials)
+    } catch {
+        drop.log.warning("Login failed with an error! \(error)")
     }
-
-    print("Found the user.")
+    drop.log.debug("Successfully logged in")
 
     return "Hi there friend!"
 }
