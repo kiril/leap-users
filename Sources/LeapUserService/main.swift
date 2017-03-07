@@ -22,6 +22,7 @@ drop.get("hello") { request in
 drop.get("authenticate", "basic") { request in
     print("Auth request headers:")
     print(request.headers)
+    fflush(__stdoutp)
 
     guard let auth = request.headers["Authorization"] else {
         print("bad request, bad!")
