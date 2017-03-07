@@ -1,1 +1,1 @@
-web: App --env=production --workdir="./"
+web: LeapUserService --env=production --workdir="./"
