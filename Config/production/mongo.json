@@ -1,0 +1,8 @@
+{
+    "url": "mongodb://heroku:EYafaSzfWICdHOdnV9Rf2SncXUZCxeL_CPMqgtCMkkYv-Sg96ZN-onYvQLuQy2301YMm_BB07ogppJWncIvMng@candidate.7.mongolayer.com:10566,candidate.41.mongolayer.com:11198/app64629958",
+    "host":  "candidate.41.mongolayer.com",
+    "port": "11198",
+    "user": "leap",
+    "password": "leap2017",
+    "database": "app64629958"
+}
