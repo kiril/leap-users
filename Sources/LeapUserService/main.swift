@@ -24,14 +24,16 @@ drop.get("authenticate", "basic") { request in
     print(request.headers)
     fflush(__stdoutp)
 
-    guard let auth = request.headers["Authorization"] else {
+    guard let credentials = request.auth.header?.basic else {
         print("bad request, bad!")
         throw Abort.badRequest
     }
 
     print("got a good auth request! I should do something with that...")
-    //if let user = db["user"].findOne(["email": email]) {
-    //}
+    guard let user = db["user"].findOne(["email": credentials.id]) else {
+        print("No such user")
+        throw Abort.unauthorized
+    }
     return "Hi there friend!"
 }
 
