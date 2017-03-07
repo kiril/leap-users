@@ -11,15 +11,17 @@ import Auth
     import Darwin
 #endif
 
-let drop = Droplet()
+// it's nice to see logs on Heroku and stuff
+setlinebuf(stdout)
 
+
+let drop = Droplet()
 // Mongo
 try drop.addProvider(VaporMongo.Provider.self)
 // Auth
 drop.middleware.append(AuthMiddleware(user: LeapUserService.User.self))
 
-// it's nice to see logs on Heroku and stuff
-setlinebuf(stdout)
+// Views... these should go elsewhere...
 
 drop.get("/") { request in
     return Response(redirect: "http://www.singleleap.com")
@@ -37,13 +39,14 @@ drop.get("authenticate", "basic") { request in
         throw Abort.badRequest
     }
 
-    print("got a good auth request! I should do something with that...")
+    print("Retrieving the user:")
     guard let user = try User.query().filter("email", credentials.id).first() else {
-        print("No such user exists!")
+        print("No such user. \(credentials.id)")
         throw Abort.custom(status: Status.unauthorized, message: "No such user.")
     }
 
-    print("Fuck yeah, got through auth!")
+    print("Found the user.")
+
     return "Hi there friend!"
 }
 
