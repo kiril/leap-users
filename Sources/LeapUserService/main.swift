@@ -15,7 +15,7 @@ try drop.addProvider(VaporMongo.Provider.self)
 drop.middleware.append(AuthMiddleware(user: LeapUserService.User.self))
 // SwiftyBeaver
 let console = ConsoleDestination()
-//console.format = "$DHH:mm:ss$d $L $M"
+console.format = "$DHH:mm:ss$d $L $M"
 drop.addProvider(SwiftyBeaverProvider(destinations: [console]))
 
 let log = drop.log.self
@@ -36,6 +36,7 @@ drop.get("hello") { request in
 }
 
 drop.get("authenticate", "basic") { request in
+    log.error("WTF man")
     guard let credentials = request.auth.header?.basic else {
         log.error("No HTTP Auth Headers")
         throw Abort.badRequest
