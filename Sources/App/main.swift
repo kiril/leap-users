@@ -2,12 +2,18 @@ import Vapor
 
 let drop = Droplet()
 
-drop.get { req in
-    return try drop.view.make("welcome", [
-    	"message": drop.localization[req.lang, "welcome", "title"]
-    ])
+drop.get("/hello") { request in
+    return "Hello, Swifty World!"
 }
 
-drop.resource("posts", PostController())
+drop.get("/authenticate", "basic") { request in
+    print(request.headers)
+    guard let auth = request.headers["Authorization"] else {
+        print("bad request, bad!")
+        throw Abort.badRequest
+    }
+    print("got a good auth request")
+    return "Hi there friend!"
+}
 
 drop.run()
