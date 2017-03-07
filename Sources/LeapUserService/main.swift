@@ -7,6 +7,12 @@ import Auth
 import SwiftyBeaverVapor
 import SwiftyBeaver
 
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin
+#endif
+
 let drop = Droplet()
 
 // Mongo
@@ -38,6 +44,7 @@ drop.get("hello") { request in
 drop.get("authenticate", "basic") { request in
     log.error("WTF man")
     debugPrint("omfg please work")
+    fflush(stdout)
     guard let credentials = request.auth.header?.basic else {
         log.error("No HTTP Auth Headers")
         throw Abort.badRequest
