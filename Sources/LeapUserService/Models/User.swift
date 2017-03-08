@@ -14,14 +14,14 @@ final class User: Model, Auth.User {
     }
 
     init(node: Node, in context: Context) throws {
-        id = try node.extract("_id")
+        id = try! node.extract("id")
         email = try node.extract("email")
         password = try node.extract("password")
     }
 
     func makeNode(context: Context) throws -> Node {
         return try Node(node: [
-                          "_id": id,
+                          "id": id,
                           "email": email,
                           "password": password
                         ]
@@ -29,6 +29,7 @@ final class User: Model, Auth.User {
     }
 
     public static func prepare(_ database: Fluent.Database) throws {
+        //database.create("users")
     }
 
     public static func revert(_ database: Fluent.Database) throws {

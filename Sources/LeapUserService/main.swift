@@ -20,7 +20,8 @@ let drop = Droplet()
 try drop.addProvider(VaporMongo.Provider.self)
 // Auth
 drop.middleware.append(AuthMiddleware(user: LeapUserService.User.self))
-
+// Models
+drop.preparations.append(LeapUserService.User.self)
 
 // Views... these should go elsewhere...
 
@@ -50,5 +51,8 @@ drop.get("authenticate", "basic") { request in
 
     return "Hi there friend!"
 }
+
+drop.resource("users", UserController())
+
 
 drop.run()
