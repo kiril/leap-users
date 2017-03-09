@@ -1,6 +1,6 @@
 {
     "url": "44517d87dc3a485f8e7c1dd334eb17b0/iad2-c5-0.mongo.objectrocket.com:52024,iad2-c5-1.mongo.objectrocket.com:52024,iad2-c5-2.mongo.objectrocket.com:52024",
-    "host":  "iad2-c5-0.mongo.objectrocket.com",
+    "host":  "iad2-c5-0.mongo.objectrocket.com:52024,iad2-c5-1.mongo.objectrocket.com:52024,iad2-c5-2.mongo.objectrocket.com:52024",
     "port": "52024",
     "user": "leap",
     "password": "leap2017",
