@@ -46,8 +46,10 @@ drop.get("authenticate", "basic") { request in
         try request.auth.login(credentials)
     } catch {
         drop.log.warning("Login failed with an error! \(error)")
+        drop.log.error("Login failed with an error! \(error)")
     }
     drop.log.debug("Successfully logged in")
+    drop.log.warning("Successfully logged in")
 
     return "Hi there friend!"
 }
