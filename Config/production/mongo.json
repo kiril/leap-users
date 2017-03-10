@@ -1,8 +1,3 @@
 {
-    "url": "44517d87dc3a485f8e7c1dd334eb17b0/iad2-c5-0.mongo.objectrocket.com:52024,iad2-c5-1.mongo.objectrocket.com:52024,iad2-c5-2.mongo.objectrocket.com:52024",
-    "host":  "iad2-c5-0.mongo.objectrocket.com:52024,iad2-c5-1.mongo.objectrocket.com:52024,iad2-c5-2.mongo.objectrocket.com:52024",
-    "port": "52024",
-    "user": "leap",
-    "password": "leap2017",
-    "database": "leap"
+    "connection_string": "mongodb://leap:leap2017@iad2-c6-1.mongo.objectrocket.com:52122,iad2-c6-0.mongo.objectrocket.com:52122,iad2-c6-2.mongo.objectrocket.com:52122/leap?replicaSet=704756c0c09849eeb8d5d9848de6e0df"
 }
