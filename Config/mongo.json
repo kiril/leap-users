@@ -1,6 +1,7 @@
 {
-    "url": "mongodb://localhost:27017/leap",
-    "user": "",
-    "password": "",
-    "database": "leap"
+    "servers": "iad2-c5-0.mongo.objectrocket.com:52024,iad2-c5-1.mongo.objectrocket.com:52024,iad2-c5-2.mongo.objectrocket.com:52024",
+    "replicaSet": "44517d87dc3a485f8e7c1dd334eb17b0",
+    "database": "leap",
+    "username": "leap",
+    "password": "leap2017"
 }

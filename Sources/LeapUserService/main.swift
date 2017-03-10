@@ -1,7 +1,7 @@
 import Foundation
 
 import Vapor
-import VaporMongo
+import VaporMongoKitten
 import HTTP
 import Auth
 
@@ -17,7 +17,7 @@ setlinebuf(stdout)
 
 let drop = Droplet()
 // Mongo
-try drop.addProvider(VaporMongo.Provider.self)
+try drop.addProvider(VaporMongoKitten.VaporMongoKittenProvider.self)
 // Auth
 drop.middleware.append(AuthMiddleware(user: LeapUserService.User.self))
 // Models
