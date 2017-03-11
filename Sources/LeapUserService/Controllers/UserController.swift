@@ -25,7 +25,7 @@ final class UserController: ResourceRepresentable {
     func update(request: Request, user: User) throws -> ResponseRepresentable {
         let new = try request.user()
         var user = user
-        user.password = new.password
+        user.updatePassword(to: new.password)
         try user.save()
         return user
     }
