@@ -26,7 +26,7 @@ final class User: Model, Auth.User {
 
     init(node: Node, in context: Context) throws {
         self.email = try node.extract("email")
-        self.id = try! node.extract("id")
+        self.id = try! node.extract("_id")
 
         let salt: String? = try! node.extract("salt")
 
@@ -53,12 +53,14 @@ final class User: Model, Auth.User {
     }
 
     func passwordMatches(password: String) -> Bool {
-        return self.password == User.hashPassword(password: password, salt: self.salt)
+        let hashed = User.hashPassword(password: password, salt: self.salt)
+        print("my password is \(password) and incoming \(password) maps to \(hashed)")
+        return self.password == hashed
     }
 
     func makeNode(context: Context) throws -> Node {
         return try Node(node: [
-                          "id": id,
+                          "_id": id,
                           "email": email,
                           "password": password,
                           "salt": salt
@@ -82,16 +84,22 @@ final class User: Model, Auth.User {
             throw Abort.custom(status: .badRequest, message: "Bad authentication.")
         }
 
+        print("Got the API key...")
+
         let email = apiKey.id.lowercased()
         let password = apiKey.secret
 
-        guard let user = try User.query().filter("email", email).first() else {
+        guard let user = try User.query().filter("email", email.lowercased()).first() else {
+            print("Couldn't find that user, hm.")
             throw Abort.custom(status: .unauthorized, message: "Authorization failure.")
         }
 
         if !user.passwordMatches(password: password) {
+            print("Didn't match passwords")
             throw Abort.custom(status: .unauthorized, message: "Authorization failure.")
         }
+
+        print("Auth succeeded")
 
         return user
     }

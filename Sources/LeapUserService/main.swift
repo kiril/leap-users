@@ -11,9 +11,6 @@ import Auth
     import Darwin
 #endif
 
-// it's nice to see logs on Heroku and stuff
-setlinebuf(stdout)
-
 
 let drop = Droplet()
 // Mongo
@@ -22,6 +19,9 @@ try drop.addProvider(VaPurr.Provider.self)
 drop.middleware.append(AuthMiddleware(user: LeapUserService.User.self))
 // Models
 drop.preparations.append(LeapUserService.User.self)
+
+// it's nice to see logs on Heroku and stuff
+setlinebuf(stdout)
 
 // Views... these should go elsewhere...
 
