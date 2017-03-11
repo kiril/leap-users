@@ -51,6 +51,10 @@ final class User: Model, Auth.User {
         self.password = User.hashPassword(password: password, salt: self.salt)
     }
 
+    func passwordMatches(password: String) -> Bool {
+        return self.password == User.hashPassword(password: password, salt: self.salt)
+    }
+
     func makeNode(context: Context) throws -> Node {
         return try Node(node: [
                           "id": id,
@@ -69,19 +73,22 @@ final class User: Model, Auth.User {
     }
 
     static func authenticate(credentials: Credentials) throws -> Auth.User {
-        let user: User?
-
         guard let apiKey = credentials as? APIKey else {
             throw Abort.custom(status: .badRequest, message: "Bad authentication.")
         }
 
-        user = try User.query().filter("email", apiKey.id.lowercased()).filter("password", apiKey.secret).first()
+        let email = apiKey.id.lowercased()
+        let password = apiKey.secret
 
-        guard let u = user else {
-            throw Abort.custom(status: .unauthorized, message: "No matching user.")
+        guard let user = try User.query().filter("email", email).first() else {
+            throw Abort.custom(status: .unauthorized, message: "Authorization failure.")
         }
 
-        return u
+        if !user.passwordMatches(password: password) {
+            throw Abort.custom(status: .unauthorized, message: "Authorization failure.")
+        }
+
+        return user
     }
 
     static func register(credentials: Credentials) throws -> Auth.User {
