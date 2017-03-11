@@ -41,17 +41,12 @@ drop.get("authenticate", "basic") { request in
         throw Abort.badRequest
     }
 
-    drop.log.debug("Logging in")
-    do {
-        try request.auth.login(credentials)
-    } catch {
-        drop.log.warning("Login failed with an error! \(error)")
-        drop.log.error("Login failed with an error! \(error)")
-    }
-    drop.log.debug("Successfully logged in")
-    drop.log.warning("Successfully logged in")
+    drop.log.debug("Logging in [log]")
+    print("Logging in [print]")
 
-    return "Hi there friend!"
+    let user = try LeapUserService.User.authenticate(credentials: credentials) as! LeapUserService.User
+
+    return try user.toJSON()
 }
 
 drop.resource("users", UserController())

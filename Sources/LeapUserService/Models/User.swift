@@ -10,6 +10,7 @@ final class User: Model, Auth.User {
     var email: String
     var password: String
     var salt: String
+    var exists: Bool = false
 
     init(email: String, password: String, salt: String) {
         self.email = email
@@ -63,6 +64,10 @@ final class User: Model, Auth.User {
                           "salt": salt
                         ]
         )
+    }
+
+    func toJSON() throws -> JSON {
+        return try JSON(node: ["user_id": id, "email": email])
     }
 
     public static func prepare(_ database: Fluent.Database) throws {
