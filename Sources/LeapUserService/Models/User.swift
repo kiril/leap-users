@@ -25,7 +25,7 @@ final class User: Model, Auth.User {
     }
 
     init(node: Node, in context: Context) throws {
-        self.email = try node.extract("email")
+        self.email = try node.extract("email").string.lowercased()
         self.id = try! node.extract("_id")
 
         let salt: String? = try! node.extract("salt")
@@ -54,7 +54,6 @@ final class User: Model, Auth.User {
 
     func passwordMatches(password: String) -> Bool {
         let hashed = User.hashPassword(password: password, salt: self.salt)
-        print("my password is \(password) and incoming \(password) maps to \(hashed)")
         return self.password == hashed
     }
 
@@ -79,27 +78,25 @@ final class User: Model, Auth.User {
     public static func revert(_ database: Fluent.Database) throws {
     }
 
+    static func auth(credentials: Credentials) throws -> User {
+        return try User.authenticate(credentials: credentials) as! User
+    }
+
     static func authenticate(credentials: Credentials) throws -> Auth.User {
         guard let apiKey = credentials as? APIKey else {
             throw Abort.custom(status: .badRequest, message: "Bad authentication.")
         }
 
-        print("Got the API key...")
-
         let email = apiKey.id.lowercased()
         let password = apiKey.secret
 
         guard let user = try User.query().filter("email", email.lowercased()).first() else {
-            print("Couldn't find that user, hm.")
             throw Abort.custom(status: .unauthorized, message: "Authorization failure.")
         }
 
         if !user.passwordMatches(password: password) {
-            print("Didn't match passwords")
             throw Abort.custom(status: .unauthorized, message: "Authorization failure.")
         }
-
-        print("Auth succeeded")
 
         return user
     }

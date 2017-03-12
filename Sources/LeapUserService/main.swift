@@ -25,6 +25,7 @@ setlinebuf(stdout)
 
 // Views... these should go elsewhere...
 
+
 drop.get("/") { request in
     return Response(redirect: "http://www.singleleap.com")
 }
@@ -33,23 +34,38 @@ drop.get("hello") { request in
     return "Hello, Swifty World!"
 }
 
-drop.get("authenticate", "basic") { request in
-    drop.log.info("authenticate/basic called...")
 
-    guard let credentials = request.auth.header?.basic else {
-        drop.log.warning("No HTTP Auth Headers")
-        throw Abort.badRequest
+drop.group("api") { api in
+    typealias LeapUser = LeapUserService.User
+
+    api.group("v1") { v1 in
+
+        v1.get("authenticate", "basic") { request in
+            drop.log.info("authenticate/basic called...")
+
+            guard let credentials = request.auth.header?.basic else {
+                drop.log.warning("No HTTP Auth Headers")
+                throw Abort.badRequest
+            }
+
+            drop.log.debug("Logging in [log]")
+            print("Logging in [print]")
+
+            return try LeapUser.auth(credentials: credentials).toJSON()
+        }
+
+        v1.put("verify") { request in
+            guard let email = request.data["email"]?.string else {
+                throw Abort.badRequest
+            }
+            guard let user = try User.query().filter("email", email.lowercased()).first() else {
+                throw Abort.notFound
+            }
+            return "OK"
+        }
+
+        v1.resource("users", UserController())
     }
-
-    drop.log.debug("Logging in [log]")
-    print("Logging in [print]")
-
-    let user = try LeapUserService.User.authenticate(credentials: credentials) as! LeapUserService.User
-
-    return try user.toJSON()
 }
-
-drop.resource("users", UserController())
-
 
 drop.run()
