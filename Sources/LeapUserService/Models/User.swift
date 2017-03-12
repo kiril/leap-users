@@ -5,11 +5,16 @@ import HTTP
 import Foundation
 import CryptoSwift
 
-final class User: Model, Auth.User {
+final class User: Model, Auth.User, Audited {
     var id: Node?
     var email: String
     var password: String
     var salt: String
+    var verified: Bool?
+    var created: NSDate?
+    var updated: NSDate?
+
+
     var exists: Bool = false
 
     init(email: String, password: String, salt: String) {
@@ -36,6 +41,10 @@ final class User: Model, Auth.User {
         } else {
             self.salt = User.createSalt()
             self.password = User.hashPassword(password: try node.extract("password"), salt: self.salt)
+        }
+
+        if let verified: Int = try node.extract("verified") {
+            self.verified = Bool(verified as NSNumber)
         }
     }
 

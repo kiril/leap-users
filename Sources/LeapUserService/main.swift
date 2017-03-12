@@ -58,9 +58,13 @@ drop.group("api") { api in
             guard let email = request.data["email"]?.string else {
                 throw Abort.badRequest
             }
-            guard let user = try User.query().filter("email", email.lowercased()).first() else {
-                throw Abort.notFound
+
+            guard var user = try User.query().filter("email", email.lowercased()).first() else {
+                throw Abort.badRequest
             }
+
+            user.verified = true
+            try user.save()
             return "OK"
         }
 
