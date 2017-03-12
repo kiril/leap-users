@@ -43,8 +43,8 @@ final class User: Model, Auth.User, Audited {
             self.password = User.hashPassword(password: try node.extract("password"), salt: self.salt)
         }
 
-        if let verified: Int = try node.extract("verified") {
-            self.verified = Bool(verified as NSNumber)
+        if let verified: Bool = try node.extract("verified") {
+            self.verified = verified//Bool(verified as NSNumber)
         }
     }
 
