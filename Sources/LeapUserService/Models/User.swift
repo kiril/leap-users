@@ -44,7 +44,7 @@ final class User: Model, Auth.User, Audited {
         }
 
         print("node.extract('verified') =")
-        debugPrint(try node.extract("verified"))
+        debugPrint(node["verified"])
 
         if let verified: Bool = try node.extract("verified") {
             self.verified = verified // Bool(verified as NSNumber)
