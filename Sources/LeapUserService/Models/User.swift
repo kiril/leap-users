@@ -30,6 +30,7 @@ final class User: Model, Auth.User, Audited {
     }
 
     init(node: Node, in context: Context) throws {
+        print("Node: \(node)")
         self.email = try node.extract("email").string.lowercased()
         self.id = try! node.extract("_id")
 

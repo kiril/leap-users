@@ -62,6 +62,7 @@ drop.group("api") { api in
                 throw Abort.custom(status: .unauthorized, message: "Authorization failed.")
             }
 
+            print("A User:")
             print(try User.query().first())
 
             guard var user = try User.query().filter("email", email.lowercased()).first() else {
