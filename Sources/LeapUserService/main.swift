@@ -65,7 +65,7 @@ drop.group("api") { api in
             print("A User:")
             print(try User.query().first())
 
-            print("Querying by email... \(email)")
+            print("Querying by email... \(email), \(email.lowercased())")
 
             guard var user = try User.query().filter("email", email.lowercased()).first() else {
                 print("no such user as \(email)")
