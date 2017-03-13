@@ -74,10 +74,7 @@ drop.group("api") { api in
         }
 
         v1.put("verify") { request in
-            print("Verify request data:")
-            print(request.data)
             guard let email = request.data["email"]?.string else {
-                print("missing email string in request data")
                 throw Abort.custom(status: .unauthorized, message: "Authorization failed.")
             }
 
