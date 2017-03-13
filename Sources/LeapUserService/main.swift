@@ -49,6 +49,7 @@ drop.group("test") { test in
          }
          u.verified = true
          try u.save()
+         return "Verified"
      }
 }
 
