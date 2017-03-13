@@ -55,12 +55,16 @@ drop.group("api") { api in
         }
 
         v1.put("verify") { request in
+            print("Verify request data:")
+            print(request.data)
             guard let email = request.data["email"]?.string else {
-                throw Abort.badRequest
+                print("missing email string in request data")
+                throw Abort.custom(status: .unauthorized, message: "Authorization failed.")
             }
 
             guard var user = try User.query().filter("email", email.lowercased()).first() else {
-                throw Abort.badRequest
+                print("no such user as \(email)")
+                throw Abort.custom(status: .unauthorized, message: "Authorization failed.")
             }
 
             user.verified = true
