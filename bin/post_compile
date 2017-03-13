@@ -1,7 +1,0 @@
-
-puts-step "Running Post-compile"
-
-echo "Cache:"
-ls -l $CACHE_DIR
-echo "Build:"
-ls -l $BUILD_DIR
