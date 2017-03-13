@@ -23,15 +23,15 @@ final class User: Model, Auth.User, Audited {
         self.salt = salt
     }
 
-    private init(email: String, password: String) {
+    init(email: String, password: String) {
         self.email = email
         self.salt = User.createSalt()
         self.password = User.hashPassword(password: password, salt: salt)
     }
 
     init(node: Node, in context: Context) throws {
-        print("Node: \(node)")
-        self.email = try node.extract("email").string.lowercased()
+        self.email = try node.extract("email")
+        self.email = self.email.lowercased()
         self.id = try! node.extract("_id")
 
         let salt: String? = try! node.extract("salt")
@@ -44,9 +44,7 @@ final class User: Model, Auth.User, Audited {
             self.password = User.hashPassword(password: try node.extract("password"), salt: self.salt)
         }
 
-        print("node.extract('verified') =")
         debugPrint(node["verified"])
-        print(node["verified"])
 
         if let verified: Bool = try node.extract("verified") {
             self.verified = verified // Bool(verified as NSNumber)
@@ -72,13 +70,14 @@ final class User: Model, Auth.User, Audited {
     }
 
     func makeNode(context: Context) throws -> Node {
-        return try Node(node: [
-                          "_id": id,
-                          "email": email,
-                          "password": password,
-                          "salt": salt
-                        ]
-        )
+        var data: [String: Node?] = ["_id": id,
+                                     "email": Node(email),
+                                     "password": Node(password),
+                                     "salt": Node(salt)]
+        if let verified = self.verified {
+            data["verified"] = Node(verified)
+        }
+        return try Node(node: data)
     }
 
     func toJSON() throws -> JSON {

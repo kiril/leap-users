@@ -34,6 +34,24 @@ drop.get("hello") { request in
     return "Hello, Swifty World!"
 }
 
+drop.group("test") { test in
+    test.get("create") { request in
+        var user = User(email: "kiril.savino@gmail.com",
+                        password: "f00tfall")
+        try user.save()
+        return "Created"
+    }
+
+    test.get("verify") { request in
+         var user = try User.query().filter("email", "kiril.savino@gmail.com").first()
+         guard var u = user else {
+             throw Abort.serverError
+         }
+         u.verified = true
+         try u.save()
+     }
+}
+
 
 drop.group("api") { api in
     typealias LeapUser = LeapUserService.User
