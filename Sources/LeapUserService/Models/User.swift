@@ -5,7 +5,7 @@ import HTTP
 import Foundation
 import CryptoSwift
 
-final class User: Model, Auth.User, Audited {
+final class User: Model, Auth.User, Audited, StringInitializable {
     var id: Node?
     var email: String
     var password: String
@@ -15,6 +15,14 @@ final class User: Model, Auth.User, Audited {
     var updated: NSDate?
 
     var exists: Bool = false
+
+    convenience init?(from string: String) throws {
+        if let user = try User.find(string) {
+            try self.init(node: Node(user.makeNode()))
+        } else {
+            return nil
+        }
+    }
 
     init(email: String, password: String, salt: String) {
         self.email = email
@@ -83,10 +91,12 @@ final class User: Model, Auth.User, Audited {
 
     public static func find(_ id: NodeRepresentable) throws -> User? {
         if let stringId = id as? String {
+            if stringId.characters.index(of: "@") != nil {
+                return try User.query().filter("email", stringId).first()
+            }
             if stringId.characters.count == 24 {
                 return try User.query().filter("_id", stringId).first()
             }
-            return try User.query().filter("email", stringId).first()
         }
 
         throw SchemaError.badData(field: "id")
