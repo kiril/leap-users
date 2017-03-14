@@ -14,7 +14,6 @@ final class User: Model, Auth.User, Audited {
     var created: NSDate?
     var updated: NSDate?
 
-
     var exists: Bool = false
 
     init(email: String, password: String, salt: String) {
@@ -44,10 +43,8 @@ final class User: Model, Auth.User, Audited {
             self.password = User.hashPassword(password: try node.extract("password"), salt: self.salt)
         }
 
-        debugPrint(node["verified"])
-
         if let verified: Bool = try node.extract("verified") {
-            self.verified = verified // Bool(verified as NSNumber)
+            self.verified = verified
         }
     }
 
@@ -82,6 +79,17 @@ final class User: Model, Auth.User, Audited {
 
     func toJSON() throws -> JSON {
         return try JSON(node: ["user_id": id, "email": email])
+    }
+
+    public static func find(_ id: NodeRepresentable) throws -> User? {
+        if let stringId = id as? String {
+            if stringId.characters.count == 24 {
+                return try User.query().filter("_id", stringId).first()
+            }
+            return try User.query().filter("email", stringId).first()
+        }
+
+        throw SchemaError.badData(field: "id")
     }
 
     public static func prepare(_ database: Fluent.Database) throws {

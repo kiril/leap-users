@@ -50,7 +50,14 @@ drop.group("test") { test in
          u.verified = true
          try u.save()
          return "Verified"
-     }
+    }
+
+    test.get("get") { request in
+        if let user = try User.find("58c71745234dfb7b21bb4cfa") {
+            print(user.email)
+        }
+        return "Shit, wow"
+    }
 }
 
 
@@ -60,15 +67,9 @@ drop.group("api") { api in
     api.group("v1") { v1 in
 
         v1.get("authenticate", "basic") { request in
-            drop.log.info("authenticate/basic called...")
-
             guard let credentials = request.auth.header?.basic else {
-                drop.log.warning("No HTTP Auth Headers")
                 throw Abort.badRequest
             }
-
-            drop.log.debug("Logging in [log]")
-            print("Logging in [print]")
 
             return try LeapUser.auth(credentials: credentials).toJSON()
         }
@@ -78,13 +79,7 @@ drop.group("api") { api in
                 throw Abort.custom(status: .unauthorized, message: "Authorization failed.")
             }
 
-            print("A User:")
-            print(try User.query().first())
-
-            print("Querying by email... \(email), \(email.lowercased())")
-
             guard var user = try User.query().filter("email", email.lowercased()).first() else {
-                print("no such user as \(email)")
                 throw Abort.custom(status: .unauthorized, message: "Authorization failed.")
             }
 
