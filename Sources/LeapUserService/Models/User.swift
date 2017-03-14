@@ -97,11 +97,9 @@ final class User: Model, Auth.User, Audited, StringInitializable {
     public static func find(_ id: NodeRepresentable) throws -> User? {
         if let stringId = id as? String {
             if stringId.characters.index(of: "@") != nil {
-                print("Finding by email \(stringId)")
                 return try User.query().filter("email", stringId).first()
             }
             if stringId.characters.count == 24 {
-                print("Finding by ID \(stringId)")
                 return try User.query().filter("_id", stringId).first()
             }
         }

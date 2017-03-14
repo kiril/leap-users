@@ -9,7 +9,7 @@ final class UserController: ResourceRepresentable {
     }
 
     func show(request: Request, user: User) throws -> ResponseRepresentable {
-        return user
+        return try user.toJSON()
     }
 
     func delete(request: Request, user: User) throws -> ResponseRepresentable {
