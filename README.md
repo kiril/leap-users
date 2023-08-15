@@ -1,2 +1,2 @@
 # leap-users
-User profile management service for Leap
+User profile management service for Leap (social app) built in Swift - cuz for a moment I thought doing the back-end in Swift too would be fun...
